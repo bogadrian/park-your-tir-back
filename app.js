@@ -13,6 +13,7 @@ const placesRouter = require('./routes/placesRoutes');
 const userRouter = require('./routes/userRoutes');
 const commentsRouter = require('./routes/commentsRoutes');
 const globalErrorHandler = require('./controllers/errorController');
+const viewRouter = require('./routes/viewRoutes');
 
 const AppError = require('./utilis/AppError');
 
@@ -69,6 +70,7 @@ app.use(compression());
 
 // Routes
 // the routes mountig for tours and users. they have access to tour Router and userRouter files where the endpoints are defined
+app.use('/', viewRouter);
 app.use('/api/v1/places', placesRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/comments', commentsRouter);

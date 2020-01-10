@@ -12,13 +12,11 @@ const placeSchema = new mongoose.Schema(
       unique: true,
       trim: true
     },
-    placeAuthor: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        maxlength: 1
-      }
-    ],
+    placeAuthor: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      maxlength: 1
+    },
     slug: String,
     description: {
       type: String,
@@ -32,7 +30,8 @@ const placeSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
       min: [1, 'A place must have at least 1 point rating'],
-      max: [5, 'A place can have maximum 5 points rating']
+      max: [5, 'A place can have maximum 5 points rating'],
+      set: val => Math.round(val * 10) / 10
     },
     ratingsQuantity: {
       type: Number,
@@ -60,6 +59,10 @@ const placeSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
+//add index for slugs in order to help the query for a specific place
+placeSchema.index({ slug: 1 });
+placeSchema.index({ position: '2dsphere' });
 
 //populae virtualy a place with all commnets beloging to it
 placeSchema.virtual('comments', {

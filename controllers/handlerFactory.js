@@ -40,7 +40,7 @@ exports.updateDoc = Model =>
     res.status(200).json({
       status: 'success',
       data: {
-        doc
+        data: doc
       }
     });
   });
@@ -52,7 +52,7 @@ exports.createDoc = Model =>
     res.status(201).json({
       status: 'success',
       data: {
-        doc
+        data: doc
       }
     });
   });
@@ -72,14 +72,14 @@ exports.getDoc = (Model, popOptions) =>
     res.status(200).json({
       status: 'success',
       data: {
-        doc
+        data: doc
       }
     });
   });
 
 exports.getAllDoc = Model =>
   catchAsync(async (req, res, next) => {
-    // To allow for nested GET reviews on tour (hack)//get all places (for admin only)
+    // To allow for nested GET comments on place (hack)//get all places (for admin only)
 
     let filter = {};
     if (req.params.id) filter = { place: req.params.id };
@@ -99,28 +99,7 @@ exports.getAllDoc = Model =>
       status: 'success',
       results: doc.length,
       data: {
-        doc
+        data: doc
       }
     });
   });
-
-// exports.blockDoc = Model =>
-//   catchAsync(async (req, res, next) => {
-//     //code to block the user here
-//     const id = req.params.id;
-
-//     if (!id) {
-//       return next(
-//         new AppError('No User found with that ID', 404)
-//       );
-//     }
-//     const blockUser = await Model.findByIdAndUpdate(
-//       id,
-//       { isBlocked: true },
-//       () => {
-//         console.log('User is blocked');
-//       }
-//     );
-//     req.body.blockUser = blockUser;
-//     next();
-//   });

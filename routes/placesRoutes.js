@@ -8,34 +8,35 @@ const router = express.Router();
 
 router.use('/:placeId/comments', commentsRouter);
 
+//public routes
 router
-  .route('/range/:range')
-  .get(placesController.getRange);
+  .route('/tours-within/:distance/center/:latlng')
+  // lat first and then lng when seving places. in search query normal, lng and then lat
+  .get(placesController.getToursWithin);
+
+router
+  .route('/distances/:latlng')
+  .get(placesController.getDistances);
+
+router.route('/:id').get(placesController.getPlace);
+
+//protected routes - only for login users
+router.use(authController.protect);
 
 router
   .route('/')
-  .post(
-    authController.protect,
-    placesController.createPlace
-  );
+  .post(placesController.createPlace)
+  .get(placesController.getPlaces);
+
 router
   .route('/:id')
-  .get(placesController.getPlace)
-  .patch(
-    authController.protect,
-    placesController.updatePlace
-  )
-  .delete(
-    authController.protect,
-    placesController.deletePlace
-  );
+  .patch(placesController.updatePlace)
+  .delete(placesController.deletePlace);
 
 //ADMIN only routes
-router.use(
-  authController.protect,
-  authController.restrictTo('admin')
-);
-
-router.route('/').get(placesController.getPlaces);
+// router.use(
+//   authController.protect,
+//   authController.restrictTo('admin')
+// );
 
 module.exports = router;

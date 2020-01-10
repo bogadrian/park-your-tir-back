@@ -6,11 +6,14 @@ const router = express.Router({ mergeParams: true });
 
 //router.route('/').get(commentsController.getAllComments);
 
+// public Routes
+router.route('/').get(commentsController.getAllComments);
+
+//auth routes
 router.use(authController.protect);
 
 router
   .route('/')
-  .get(commentsController.getAllComments)
   .post(
     commentsController.setPlaceUserIds,
     commentsController.createComment

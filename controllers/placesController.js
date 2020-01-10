@@ -1,15 +1,7 @@
 const Place = require('../models/placesModel');
-const catchAsync = require('../utilis/catchAsync');
 const factory = require('./handlerFactory');
-
-exports.getRange = (req, res) => {
-  const ranges = req.params.range;
-  res.json({
-    data: {
-      ranges
-    }
-  });
-};
+const AppError = require('../utilis/AppError');
+const catchAsync = require('../utilis/catchAsync');
 
 // routes handler function
 exports.getPlaces = factory.getAllDoc(Place);
@@ -20,28 +12,78 @@ exports.createPlace = factory.createDoc(Place);
 exports.updatePlace = factory.updateDoc(Place);
 exports.deletePlace = factory.deleteDoc(Place);
 
-// grop data responses by ratingAverage. respond at /api/v1/places/average-rating. it takes one place and calculates the average rating by extrating a media from all ratings for that place. It exposes also the number of ratings recived for that place and the total number of
-exports.getRatingAverages = catchAsync(async (req, res) => {
-  const stats = await Place.aggregate([
-    {
-      $match: { ratingsAverage: { $gte: 1 } }
-    },
-    {
-      $group: {
-        _id: '$ratingsAverage',
-        numPlace: { $sum: 1 },
-        numRatings: { $sum: '$ratingsQuantity' },
-        avgRating: { $avg: '$ratingsAverage' }
+exports.getToursWithin = catchAsync(
+  async (req, res, next) => {
+    const { distance, latlng } = req.params;
+    const [lat, lng] = latlng.split(',');
+
+    const radius = distance / 6378.1;
+
+    if (!lat || !lng) {
+      next(
+        new AppError(
+          'Please provide latitutr and longitude in the format lat,lng.',
+          400
+        )
+      );
+    }
+
+    const places = await Place.find({
+      position: {
+        $geoWithin: { $centerSphere: [[lng, lat], radius] }
       }
-    },
-    {
-      $sort: { ratingAverage: 1 }
+    });
+
+    res.status(200).json({
+      status: 'success',
+      results: places.length,
+      data: {
+        data: places
+      }
+    });
+  }
+);
+
+exports.getDistances = catchAsync(
+  async (req, res, next) => {
+    const { latlng } = req.params;
+    const [lat, lng] = latlng.split(',');
+
+    const multiplier = 0.001;
+
+    if (!lat || !lng) {
+      next(
+        new AppError(
+          'Please provide latitutr and longitude in the format lat,lng.',
+          400
+        )
+      );
     }
-  ]);
-  res.status(200).json({
-    status: 'success',
-    data: {
-      stats
-    }
-  });
-});
+
+    const distances = await Place.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [lng * 1, lat * 1]
+          },
+          distanceField: 'distance',
+          distanceMultiplier: multiplier
+        }
+      },
+      {
+        $project: {
+          distance: 1,
+          name: 1
+        }
+      }
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: distances
+      }
+    });
+  }
+);
