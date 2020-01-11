@@ -2,24 +2,32 @@ const nodemailer = require('nodemailer');
 const pug = require('pug');
 const htmlToText = require('html-to-text');
 
-// create a email class. it takes in the user and the url (to be included in email).
+const host = process.env.SENGRID_HOST;
+const port = process.env.SENGRID_PORT;
+const userS = process.env.SENGRID_U;
+const passS = process.env.SENGRID_P;
+
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Jonas Schmedtmann <${process.env.EMAIL_FROM}>`;
+    this.from = `Park Your Tir <${process.env.EMAIL_FROM}>`;
   }
 
-  // create general transport method for production and for develompment
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
       // Sendgrid
+
       return nodemailer.createTransport({
-        service: 'SendGrid',
+        host,
+        port,
+        secure: false,
+        requireTLS: true,
+        tls: { rejectUnauthorized: false },
         auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD
+          user: userS,
+          pass: passS
         }
       });
     }
@@ -34,9 +42,9 @@ module.exports = class Email {
     });
   }
 
-  // Send email method. this is the method which actualy sends the email. it is called from below methodes, depends on situation,
+  // Send the actual email
   async send(template, subject) {
-    // 1) Render HTML based on a pug template. pass an object here to have it availble on template in order to dinamicly fill up the fields subject, firstName and url;
+    // 1) Render HTML based on a pug template
     const html = pug.renderFile(
       `${__dirname}/../views/email/${template}.pug`,
       {
@@ -59,7 +67,6 @@ module.exports = class Email {
     await this.newTransport().sendMail(mailOptions);
   }
 
-  // send welcome email on signup
   async sendWelcome() {
     await this.send(
       'welcome',
@@ -67,7 +74,6 @@ module.exports = class Email {
     );
   }
 
-  // send reset email on forgoPassword
   async sendPasswordReset() {
     await this.send(
       'passwordReset',

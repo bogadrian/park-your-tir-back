@@ -45,7 +45,7 @@
   "scripts": {
     "start": " nodemon server.js",
     "debug": "ndb server.js",
-    "prod": "NODE_ENV=production nodemon server.js",
+    "prod": " nodemon server.js",
     "test": "jest --watch"
   },
   "jest": {

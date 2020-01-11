@@ -80,7 +80,6 @@ exports.getDoc = (Model, popOptions) =>
 exports.getAllDoc = Model =>
   catchAsync(async (req, res, next) => {
     // To allow for nested GET comments on place (hack)//get all places (for admin only)
-
     let filter = {};
     if (req.params.id) filter = { place: req.params.id };
 

@@ -1,16 +1,60 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Place = require('../models/placesModel');
 const factory = require('./handlerFactory');
 const AppError = require('../utilis/AppError');
 const catchAsync = require('../utilis/catchAsync');
 
-// routes handler function
-exports.getPlaces = factory.getAllDoc(Place);
-exports.getPlace = factory.getDoc(Place, {
-  path: 'comments'
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(
+      new AppError(
+        'Not an image! Please upload only images.',
+        400
+      ),
+      false
+    );
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
 });
-exports.createPlace = factory.createDoc(Place);
-exports.updatePlace = factory.updateDoc(Place);
-exports.deletePlace = factory.deleteDoc(Place);
+
+exports.uploadPlaceImages = upload.array('images', 3);
+
+exports.resizePlaceImages = catchAsync(
+  async (req, res, next) => {
+    if (!req.files) return next();
+
+    //2) Images
+
+    req.body.images = [];
+
+    await Promise.all(
+      req.files.map(async (file, i) => {
+        const filename = `place-${
+          req.params.id
+        }-${Date.now()}-${i + 1}.jpeg`;
+
+        await sharp(file.buffer)
+          .resize(1000, 700)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/places/${filename}`);
+
+        req.body.images.push(filename);
+      })
+    );
+
+    next();
+  }
+);
 
 exports.getToursWithin = catchAsync(
   async (req, res, next) => {
@@ -72,6 +116,9 @@ exports.getDistances = catchAsync(
         }
       },
       {
+        $sort: { distance: 1 }
+      },
+      {
         $project: {
           distance: 1,
           name: 1
@@ -87,3 +134,12 @@ exports.getDistances = catchAsync(
     });
   }
 );
+
+// routes handler function
+exports.getPlaces = factory.getAllDoc(Place);
+exports.getPlace = factory.getDoc(Place, {
+  path: 'comments'
+});
+exports.createPlace = factory.createDoc(Place);
+exports.updatePlace = factory.updateDoc(Place);
+exports.deletePlace = factory.deleteDoc(Place);

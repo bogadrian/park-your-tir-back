@@ -6,6 +6,8 @@ const commentsRouter = require('./commentsRoutes');
 
 const router = express.Router();
 
+router.use(authController.isLoggedIn);
+
 router.use('/:placeId/comments', commentsRouter);
 
 //public routes
@@ -30,7 +32,11 @@ router
 
 router
   .route('/:id')
-  .patch(placesController.updatePlace)
+  .patch(
+    placesController.uploadPlaceImages,
+    placesController.resizePlaceImages,
+    placesController.updatePlace
+  )
   .delete(placesController.deletePlace);
 
 //ADMIN only routes
