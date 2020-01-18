@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 const placesController = require('../controllers/placesController');
 const commentsRouter = require('./commentsRoutes');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use(authController.isLoggedIn);
 

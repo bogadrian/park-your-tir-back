@@ -4,8 +4,6 @@ const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
-//router.route('/').get(commentsController.getAllComments);
-
 // public Routes
 router.route('/').get(commentsController.getAllComments);
 

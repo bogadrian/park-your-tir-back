@@ -98,7 +98,7 @@ exports.getDistances = catchAsync(
     if (!lat || !lng) {
       next(
         new AppError(
-          'Please provide latitutr and longitude in the format lat,lng.',
+          'Please provide latitutde and longitude in the format lat,lng.',
           400
         )
       );
@@ -136,6 +136,7 @@ exports.getDistances = catchAsync(
 );
 
 // routes handler function
+
 exports.getPlaces = factory.getAllDoc(Place);
 exports.getPlace = factory.getDoc(Place, {
   path: 'comments'
@@ -143,3 +144,4 @@ exports.getPlace = factory.getDoc(Place, {
 exports.createPlace = factory.createDoc(Place);
 exports.updatePlace = factory.updateDoc(Place);
 exports.deletePlace = factory.deleteDoc(Place);
+

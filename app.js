@@ -8,12 +8,13 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const compression = require('compression');
+const cors = require('cors');
+const pug = require('pug');
 
 const placesRouter = require('./routes/placesRoutes');
 const userRouter = require('./routes/userRoutes');
 const commentsRouter = require('./routes/commentsRoutes');
 const globalErrorHandler = require('./controllers/errorController');
-const viewRouter = require('./routes/viewRoutes');
 
 const AppError = require('./utilis/AppError');
 
@@ -22,6 +23,24 @@ const app = express();
 // Middleware Stack
 //set http secure headers with helmet
 app.use(helmet());
+
+//list of allowed domains to make request
+// const whitelist = [
+//   'http://localhost:3006',
+//   `http://localhost:${'*'}`
+// ];
+// const corsOptions = {
+//   origin: function(origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new AppError('Not allowed by CORS', 403));
+//     }
+//   }
+// };
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 // set morgan tu run only in development enviroment
 if (process.env.NODE_ENV === 'development') {
@@ -56,9 +75,6 @@ app.use(
   })
 );
 
-// Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
-
 // another middlware which adds a date reate at time on req object and save it with it
 app.use((req, res, next) => {
   req.reqTime = new Date().toISOString();
@@ -70,7 +86,7 @@ app.use(compression());
 
 // Routes
 // the routes mountig for tours and users. they have access to tour Router and userRouter files where the endpoints are defined
-app.use('/', viewRouter);
+
 app.use('/api/v1/places', placesRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/comments', commentsRouter);
