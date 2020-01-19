@@ -15,7 +15,6 @@ const signToken = id => {
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
-  res.setHeader('Cache-Control', 'private');
   res.cookie('jwt', token, {
     expires: new Date(
       Date.now() +
@@ -30,7 +29,7 @@ const createSendToken = (user, statusCode, req, res) => {
       req.secure ||
       req.headers['x-forwarded-proto'] === 'https'
   });
-  res.send('done');
+
   // Remove password from output
   user.password = undefined;
 
