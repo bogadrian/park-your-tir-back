@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const compression = require('compression');
 const cors = require('cors');
-const pug = require('pug');
 
 const placesRouter = require('./routes/placesRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -39,7 +38,11 @@ app.use(helmet());
 //   }
 // };
 // Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  '/api/v1/static',
+  express.static(path.join(__dirname, 'public'))
+);
+
 app.use(cors());
 
 // set morgan tu run only in development enviroment

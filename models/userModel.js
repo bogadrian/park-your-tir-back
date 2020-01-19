@@ -85,6 +85,13 @@ userSchema.pre(/^find/, function(next) {
   next();
 });
 
+// userSchema.methods.userExists = async function(email) {
+//   const emailExists = this.find(email);
+//   if (emailExists) return true;
+
+//   return false;
+// };
+
 userSchema.methods.correctPassword = async function(
   candidatePassword,
   userPassword
