@@ -61,7 +61,9 @@ app.use('/api', limiter);
 
 // set express.json() middleware in oreder to have access to req.body data. Limit the amopunt of data caoming in with req.body at only 10kb
 app.use(express.json({ limit: '10kb' }));
-
+app.use(
+  express.urlencoded({ extended: true, limit: '10kb' })
+);
 // allow cookie to be read
 app.use(cookieParser());
 
