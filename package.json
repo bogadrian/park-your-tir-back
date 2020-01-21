@@ -47,7 +47,6 @@
     "start": " node server.js",
     "dev": " nodemon server.js",
     "debug": "ndb server.js",
-    "prod": " nodemon server.js",
     "test": "jest --watch"
   },
   "jest": {
