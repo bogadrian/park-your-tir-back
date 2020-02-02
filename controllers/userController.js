@@ -1,3 +1,5 @@
+const { promisify } = require('util');
+const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const sharp = require('sharp');
 const User = require('../models/userModel');
@@ -120,7 +122,45 @@ exports.createUser = (req, res) => {
   });
 };
 
-exports.getUser = factory.getDoc(User);
+// Only for rendered pages, no errors!
+// Only for rendered pages, no errors!
+exports.isLoggedIn = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  try {
+    // 1) verify token
+    const decoded = await promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+
+    // 3) Check if user changed password after the token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      return next();
+    }
+
+    // THERE IS A LOGGED IN USER
+    res.status(200).json({
+      status: 'success',
+      currentUser
+    });
+  } catch (err) {
+    return next();
+  }
+};
+
+exports.getUser = factory.getDoc(User, {
+  path: 'places'
+});
 exports.getAllUsers = factory.getAllDoc(User);
 
 // Do NOT update passwords with this!

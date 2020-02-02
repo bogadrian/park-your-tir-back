@@ -6,15 +6,21 @@ const commentsRouter = require('./commentsRoutes');
 
 const router = express.Router({ mergeParams: true });
 
-router.use(authController.isLoggedIn);
-
 router.use('/:placeId/comments', commentsRouter);
+
+router
+  .route('/coordByAdress/:address')
+  .get(placesController.getCoordsForAddress);
+
+router
+  .route('/addressByCoords/:latlng')
+  .get(placesController.getAddressFromCoords);
 
 //public routes
 router
-  .route('/tours-within/:distance/center/:latlng')
+  .route('/places-within/:distance/center/:latlng')
   // lat first and then lng when seving places. in search query normal, lng and then lat
-  .get(placesController.getToursWithin);
+  .get(placesController.getPlacesWithin);
 
 router
   .route('/distances/:latlng')

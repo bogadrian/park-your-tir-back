@@ -39,7 +39,7 @@ app.use(helmet());
 // };
 // Serving static files
 app.use(
-  '/api/v1/static',
+  '/api/v1/',
   express.static(path.join(__dirname, 'public'))
 );
 
