@@ -33,7 +33,11 @@ router.use(authController.protect);
 
 router
   .route('/')
-  .post(placesController.createPlace)
+  .post(
+    placesController.uploadPlaceImages,
+    placesController.resizePlaceImages,
+    placesController.createPlace
+  )
   .get(placesController.getPlaces);
 
 router

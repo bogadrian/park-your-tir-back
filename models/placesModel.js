@@ -30,7 +30,7 @@ const placeSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
       min: [1, 'A place must have at least 1 point rating'],
-      max: [5, 'A place can have maximum 5 points rating'],
+      max: [6, 'A place can have maximum 5 points rating'],
       set: val => Math.round(val * 10) / 10
     },
     ratingsQuantity: {

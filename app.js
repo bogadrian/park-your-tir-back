@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const compression = require('compression');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const placesRouter = require('./routes/placesRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -19,6 +20,8 @@ const AppError = require('./utilis/AppError');
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // Middleware Stack
 //set http secure headers with helmet
 app.use(helmet());
@@ -87,6 +90,7 @@ app.use((req, res, next) => {
 });
 
 //add compression to middleware stack in order to compress text files
+
 app.use(compression());
 
 // Routes
