@@ -1,5 +1,6 @@
 const multer = require('multer');
 const sharp = require('sharp');
+
 const axios = require('axios');
 const Place = require('../models/placesModel');
 const factory = require('./handlerFactory');
@@ -9,7 +10,6 @@ const catchAsync = require('../utilis/catchAsync');
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-  console.log(req);
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
@@ -32,7 +32,6 @@ exports.uploadPlaceImages = upload.array('images', 3);
 
 exports.resizePlaceImages = catchAsync(
   async (req, res, next) => {
-    console.log(req.body.name);
     if (!req.files) return next();
 
     //2) Images
@@ -42,7 +41,7 @@ exports.resizePlaceImages = catchAsync(
     await Promise.all(
       req.files.map(async (file, i) => {
         const filename = `place-${
-          req.body.name
+          req.user.id
         }-${Date.now()}-${i + 1}.jpeg`;
 
         await sharp(file.buffer)
@@ -60,6 +59,7 @@ exports.resizePlaceImages = catchAsync(
 );
 
 exports.createPlace = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const {
     name,
     description,
