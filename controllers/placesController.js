@@ -59,7 +59,6 @@ exports.resizePlaceImages = catchAsync(
 );
 
 exports.createPlace = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const {
     name,
     description,
@@ -79,7 +78,8 @@ exports.createPlace = catchAsync(async (req, res, next) => {
     description,
     ratingsAverage,
     images,
-    position
+    position,
+    placeAuthor: req.user.id
   };
 
   if (!request) {

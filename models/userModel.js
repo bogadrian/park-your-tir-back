@@ -45,10 +45,10 @@ const userSchema = new mongoose.Schema(
         message: 'Passwords are not the same!'
       }
     },
-    // places: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'Place'
-    // },
+    place: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Place'
+    },
     isBlocked: {
       type: Boolean,
       default: false,
@@ -69,6 +69,12 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// userSchema.pre(/^find/, function(next) {
+//   this.populate({
+//     path: 'place'
+//   });
+//   next();
+// });
 userSchema.virtual('places', {
   ref: 'Place',
   foreignField: 'placeAuthor',
@@ -79,7 +85,11 @@ userSchema.virtual('places', {
 
 //   next();
 // });
+// userSchema.pre(/^find/, function(next) {
+//   this.populate({ path: 'places', select: '-__v' });
 
+//   next();
+// });
 userSchema.pre('save', async function(next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
