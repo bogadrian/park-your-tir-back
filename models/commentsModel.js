@@ -7,11 +7,6 @@ const commentsSchema = mongoose.Schema(
       type: String,
       required: [true, "A comment can't be empty!"]
     },
-    likes: [Number],
-    createdAt: {
-      type: Date,
-      default: Date.now()
-    },
     rating: {
       type: Number,
       min: 1,

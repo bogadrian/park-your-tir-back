@@ -22,9 +22,12 @@ exports.deleteDoc = Model =>
 
 exports.updateDoc = Model =>
   catchAsync(async (req, res, next) => {
+    const author = req.user.id;
+
     const doc = await Model.findByIdAndUpdate(
       req.params.id,
       req.body,
+      author,
       {
         new: true,
         runValidators: true

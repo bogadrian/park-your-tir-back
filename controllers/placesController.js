@@ -97,6 +97,38 @@ exports.createPlace = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+exports.updatePlace = catchAsync(async (req, res, next) => {
+  const { name, description } = req.body;
+  let request = {
+    ...req.body,
+    placeAuthor: req.user.id
+  };
+
+  if (req.body.images.length === 0) {
+    request = { name, description };
+  }
+
+  if (!request) {
+    return next(
+      new AppError('please provide all the fileds', 404)
+    );
+  }
+
+  const place = await Place.findByIdAndUpdate(
+    req.params.id,
+    request,
+    { new: false }
+  );
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: place
+    }
+  });
+});
+
 exports.getPlacesWithin = catchAsync(
   async (req, res, next) => {
     const { distance, latlng } = req.params;
@@ -183,7 +215,7 @@ exports.getPlace = factory.getDoc(Place, {
   path: 'comments'
 });
 //exports.createPlace = factory.createDoc(Place);
-exports.updatePlace = factory.updateDoc(Place);
+
 exports.deletePlace = factory.deleteDoc(Place);
 
 exports.getCoordsForAddress = catchAsync(
