@@ -11,7 +11,7 @@ const path = require('path');
 const compression = require('compression');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const enforce = require('express-sslify');
 const placesRouter = require('./routes/placesRoutes');
 const userRouter = require('./routes/userRoutes');
 const commentsRouter = require('./routes/commentsRoutes');
@@ -23,7 +23,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 //set http secure headers with helmet
 app.use(helmet());
 
@@ -85,6 +85,17 @@ app.use(compression());
 app.use('/api/v1/places', placesRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/comments', commentsRouter);
+
+app.get('api/v1/service-worker.js', (req, res) => {
+  req.sendFile(
+    path.resolve(
+      __dirname,
+      '..',
+      'build',
+      'service-worker.js'
+    )
+  );
+});
 
 // route handler for all the endpoints misteken
 app.all('*', (req, res, next) => {
