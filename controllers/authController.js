@@ -22,6 +22,7 @@ const createSendToken = (user, statusCode, req, res) => {
           24 *
           60 *
           60 *
+          60 *
           1000
     )
     // httpOnly: true,
@@ -186,11 +187,11 @@ exports.forgotPassword = catchAsync(
 
     // 3) Send it to user's email
     try {
-      const resetURL = `${req.protocol}://${req.get(
-        'host'
-      )}/api/v1/users/resetPassword/${resetToken}`;
+      const resetURL = `${req.protocol}://${process.env.FRONT_END_LOCALHOST}/resset/${resetToken}`;
       await new Email(user, resetURL).sendPasswordReset();
-
+      // the piece of code replaced by FRONT_END_LOCALHOST variable:  req.get(
+      //   'host'
+      // )
       res.status(200).json({
         status: 'success',
         message: 'Token sent to email!'
@@ -213,6 +214,7 @@ exports.forgotPassword = catchAsync(
 exports.resetPassword = catchAsync(
   async (req, res, next) => {
     // 1) Get user based on the token
+
     const hashedToken = crypto
       .createHash('sha256')
       .update(req.params.token)

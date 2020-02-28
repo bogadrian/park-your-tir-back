@@ -6,13 +6,14 @@ const host = process.env.SENGRID_HOST;
 const port = process.env.SENGRID_PORT;
 const userS = process.env.SENGRID_U;
 const passS = process.env.SENGRID_P;
+const emailFrom = process.env.EMAIL_FROM;
 
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Park Your Tir <${process.env.EMAIL_FROM}>`;
+    this.from = `Park Your Tir <${emailFrom}>`;
   }
 
   newTransport() {
@@ -69,7 +70,7 @@ module.exports = class Email {
   async sendWelcome() {
     await this.send(
       'welcome',
-      'Welcome to the Natours Family!'
+      'Welcome to Park Your Tir App!'
     );
   }
 

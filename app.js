@@ -24,25 +24,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Middleware Stack
 //set http secure headers with helmet
 app.use(helmet());
 
-//list of allowed domains to make request
-// const whitelist = [
-//   'http://localhost:3006',
-//   `http://localhost:${'*'}`
-// ];
-// const corsOptions = {
-//   origin: function(origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new AppError('Not allowed by CORS', 403));
-//     }
-//   }
-// };
-// Serving static files
 app.use(
   '/api/v1/',
   express.static(path.join(__dirname, 'public'))
