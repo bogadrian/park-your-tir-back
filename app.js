@@ -86,7 +86,7 @@ app.use(compression());
 app.use('/api/v1/places', placesRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/comments', commentsRouter);
-app.use('api/v1/sec', secretRouter);
+app.use('/api/v1/sec', secretRouter);
 
 app.get('api/v1/service-worker.js', (req, res) => {
   req.sendFile(
