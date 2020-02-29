@@ -105,3 +105,19 @@ exports.getAllDoc = Model =>
       }
     });
   });
+
+exports.processFunct = catchAsync(
+  async (req, res, next) => {
+    const urlNode = process.env.REACT_APP_URL;
+    const geocodingNode =
+      process.env.REACT_APP_GEOLOCATION_KEY;
+    const embadedNode = process.env.REACT_APP_EMBADED_MAP;
+
+    const data = { urlNode, geocodingNode, embadedNode };
+
+    res.status(200).json({
+      status: 'success',
+      data
+    });
+  }
+);
