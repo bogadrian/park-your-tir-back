@@ -19,11 +19,11 @@ const app = require('./app');
 //call the mongoDB url connection and replace the passord and name
 let DB = process.env.DATABASE.replace(
   '<DATABASE_NAME>',
-  process.env.DATABASE
+  process.env.DATABASE_MONGODB
 );
 DB = process.env.DATABASE.replace(
   '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
+  process.env.PASSWORD_MONGODB
 );
 
 mongoose
