@@ -11,7 +11,7 @@ const path = require('path');
 const compression = require('compression');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const enforce = require('express-sslify');
+//const enforce = require('express-sslify');
 const placesRouter = require('./routes/placesRoutes');
 const userRouter = require('./routes/userRoutes');
 const commentsRouter = require('./routes/commentsRoutes');
@@ -23,7 +23,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(enforce.HTTPS({ trustProtoHeader: true }));
+//app.use(enforce.HTTPS({ trustProtoHeader: true }));
 //set http secure headers with helmet
 app.use(helmet());
 

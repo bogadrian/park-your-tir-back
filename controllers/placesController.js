@@ -1,11 +1,16 @@
 const multer = require('multer');
 const sharp = require('sharp');
 
+//const { format } = require('util');
+//const { Storage } = require('@google-cloud/storage');
 const axios = require('axios');
+//const path = require('path');
 const Place = require('../models/placesModel');
 const factory = require('./handlerFactory');
 const AppError = require('../utilis/AppError');
 const catchAsync = require('../utilis/catchAsync');
+
+//const storage = new Storage();
 
 const multerStorage = multer.memoryStorage();
 
@@ -29,6 +34,21 @@ const upload = multer({
 });
 
 exports.uploadPlaceImages = upload.array('images', 3);
+
+// const gc = new Storage({
+//   keyFilename: path.join(
+//     __dirname,
+//     '../park-my-tir-backend-2f1e09caf0c6.json'
+//   ),
+//   projectId: 'park-my-tir-backend'
+// });
+
+//const bucket = storage.bucket(process.env.GCS_BUCKET);
+//console.log(bucket);
+
+//gc.getBuckets().then(x => console.log(x));
+
+//const bucket = gc.bucket('park-tir');
 
 exports.resizePlaceImages = catchAsync(
   async (req, res, next) => {
@@ -57,6 +77,47 @@ exports.resizePlaceImages = catchAsync(
     next();
   }
 );
+
+// exports.uploadToGc = catchAsync(async (req, res, next) => {
+//   if (!req.files) {
+//     res.status(400).send('No file uploaded.');
+//     return;
+//   }
+
+//   const filename = req.files.map((x, i) => x);
+
+//   // Create a new blob in the bucket and upload the file data.
+//   let blob;
+//   if (filename[0]) {
+//     blob = bucket.file(filename[0]);
+//   }
+
+//   if (filename[1]) {
+//     blob = bucket.file(filename[1]);
+//   }
+//   if (filename[2]) {
+//     blob = bucket.file(filename[2]);
+//   }
+
+//   const blobStream = blob.createWriteStream();
+
+//   blobStream.on('error', err => {
+//     next(err);
+//   });
+
+//   blobStream.on('finish', () => {
+//     // The public URL can be used to directly access the file via HTTP.
+//     const publicUrl = format(
+//       `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+//     );
+//     res.status(200).json({
+//       status: 'success',
+//       data: publicUrl
+//     });
+//   });
+
+//   blobStream.end(req.file);
+// });
 
 exports.createPlace = catchAsync(async (req, res, next) => {
   const {
@@ -222,13 +283,9 @@ exports.getCoordsForAddress = catchAsync(
   async (req, res, next) => {
     const { address } = req.params;
 
-    // return {
-    //   lat: 40.7484474,
-    //   lng: -73.9871516
-    // };
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=
-        ${address}&key=${process.env.GEOLOCATION_KEY}`
+        ${address}&key=${process.env.GEO}`
     );
 
     const { data } = response;
@@ -260,7 +317,7 @@ exports.getAddressFromCoords = catchAsync(
 
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=
-        ${latlng}&key=${process.env.GEOLOCATION_KEY}`
+        ${latlng}&key=${process.env.GEO}`
     );
     const { data } = response;
 

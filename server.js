@@ -38,7 +38,7 @@ mongoose
   );
 
 // set the port, one from onfig.env if there is any or 3000
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // start the server here
 const server = app.listen(port, () => {
