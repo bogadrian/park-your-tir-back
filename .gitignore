@@ -4,3 +4,6 @@ node_modules/
 }
 
 park-my-tir-backend-2f1e09caf0c6.json
+id_rsa
+id_rsa_pub
+config.env
