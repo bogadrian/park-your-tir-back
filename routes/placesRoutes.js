@@ -36,7 +36,6 @@ router
   .post(
     placesController.uploadPlaceImages,
     placesController.resizePlaceImages,
-    //placesController.uploadToGc
     placesController.createPlace
   )
   .get(placesController.getPlaces);
@@ -46,7 +45,6 @@ router
   .patch(
     placesController.uploadPlaceImages,
     placesController.resizePlaceImages,
-    //placesController.uploadToGc
     placesController.updatePlace
   )
   .delete(placesController.deletePlace);

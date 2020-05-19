@@ -27,6 +27,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //set http secure headers with helmet
 app.use(helmet());
 
+//set the template engine
+app.set('view engine', 'pug');
+
 app.use(
   '/api/v1/',
   express.static(path.join(__dirname, 'public'))
@@ -49,7 +52,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // set express.json() middleware in oreder to have access to req.body data. Limit the amopunt of data caoming in with req.body at only 10kb
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '100kb' }));
 app.use(
   express.urlencoded({ extended: true, limit: '10kb' })
 );
@@ -76,7 +79,6 @@ app.use((req, res, next) => {
 });
 
 //add compression to middleware stack in order to compress text files
-
 app.use(compression());
 
 // Routes

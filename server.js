@@ -1,5 +1,6 @@
 //require mongoose
 const mongoose = require('mongoose');
+
 // install dotenv package in order to access config.env
 const dotenv = require('dotenv');
 
@@ -19,11 +20,11 @@ const app = require('./app');
 //call the mongoDB url connection and replace the passord and name
 let DB = process.env.DATABASE.replace(
   '<DATABASE_NAME>',
-  process.env.DATABASE_MONGODB
+  process.env.DATABASE
 );
 DB = process.env.DATABASE.replace(
   '<PASSWORD>',
-  process.env.PASSWORD_MONGODB
+  process.env.PASSWORD
 );
 
 mongoose

@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const User = require('./../models/userModel');
+const User = require('../models/userModel');
 const catchAsync = require('../utilis/catchAsync');
 const AppError = require('../utilis/AppError');
 const Email = require('../utilis/email');
@@ -52,7 +52,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  // console.log(url);
+
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, req, res);

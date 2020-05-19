@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
         'Please provide a valid email'
       ]
     },
+
     photo: {
       type: String,
       default: 'default.jpg'
@@ -61,7 +62,8 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       select: false
-    }
+    },
+    enabled: { type: Boolean, default: false }
   },
   {
     toJSON: { virtuals: true },

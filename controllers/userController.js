@@ -104,6 +104,22 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateEnabled = catchAsync(
+  async (req, res, next) => {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: { enabled: req.body.enabled } }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user: updatedUser
+      }
+    });
+  }
+);
+
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, {
     active: false

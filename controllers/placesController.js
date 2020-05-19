@@ -1,16 +1,11 @@
 const multer = require('multer');
 const sharp = require('sharp');
 
-//const { format } = require('util');
-//const { Storage } = require('@google-cloud/storage');
 const axios = require('axios');
-//const path = require('path');
 const Place = require('../models/placesModel');
 const factory = require('./handlerFactory');
 const AppError = require('../utilis/AppError');
 const catchAsync = require('../utilis/catchAsync');
-
-//const storage = new Storage();
 
 const multerStorage = multer.memoryStorage();
 
@@ -35,21 +30,6 @@ const upload = multer({
 
 exports.uploadPlaceImages = upload.array('images', 3);
 
-// const gc = new Storage({
-//   keyFilename: path.join(
-//     __dirname,
-//     '../park-my-tir-backend-2f1e09caf0c6.json'
-//   ),
-//   projectId: 'park-my-tir-backend'
-// });
-
-//const bucket = storage.bucket(process.env.GCS_BUCKET);
-//console.log(bucket);
-
-//gc.getBuckets().then(x => console.log(x));
-
-//const bucket = gc.bucket('park-tir');
-
 exports.resizePlaceImages = catchAsync(
   async (req, res, next) => {
     if (!req.files) return next();
@@ -65,10 +45,10 @@ exports.resizePlaceImages = catchAsync(
         }-${Date.now()}-${i + 1}.jpeg`;
 
         await sharp(file.buffer)
-          .resize(1000, 700)
+          .resize(500, 400)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public/img/places/${filename}`);
+          .toFile(`./public/img/places/${filename}`);
 
         req.body.images.push(filename);
       })
@@ -77,47 +57,6 @@ exports.resizePlaceImages = catchAsync(
     next();
   }
 );
-
-// exports.uploadToGc = catchAsync(async (req, res, next) => {
-//   if (!req.files) {
-//     res.status(400).send('No file uploaded.');
-//     return;
-//   }
-
-//   const filename = req.files.map((x, i) => x);
-
-//   // Create a new blob in the bucket and upload the file data.
-//   let blob;
-//   if (filename[0]) {
-//     blob = bucket.file(filename[0]);
-//   }
-
-//   if (filename[1]) {
-//     blob = bucket.file(filename[1]);
-//   }
-//   if (filename[2]) {
-//     blob = bucket.file(filename[2]);
-//   }
-
-//   const blobStream = blob.createWriteStream();
-
-//   blobStream.on('error', err => {
-//     next(err);
-//   });
-
-//   blobStream.on('finish', () => {
-//     // The public URL can be used to directly access the file via HTTP.
-//     const publicUrl = format(
-//       `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-//     );
-//     res.status(200).json({
-//       status: 'success',
-//       data: publicUrl
-//     });
-//   });
-
-//   blobStream.end(req.file);
-// });
 
 exports.createPlace = catchAsync(async (req, res, next) => {
   const {
@@ -140,7 +79,7 @@ exports.createPlace = catchAsync(async (req, res, next) => {
     ratingsAverage,
     images,
     position,
-    placeAuthor: req.user.id
+    placeAuthor: req.user._id
   };
 
   if (!request) {
@@ -163,7 +102,7 @@ exports.updatePlace = catchAsync(async (req, res, next) => {
   const { name, description } = req.body;
   let request = {
     ...req.body,
-    placeAuthor: req.user.id
+    placeAuthor: req.user._id
   };
 
   if (req.body.images.length === 0) {
